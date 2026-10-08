@@ -76,7 +76,44 @@ CREATE INDEX IF NOT EXISTS idx_complaints_status ON complaints(status);
 CREATE INDEX IF NOT EXISTS idx_rooms_status ON rooms(status);
 
 -- =======================================================
--- 3. Seed Sample Data for Testing
+-- 3. Row Level Security (RLS) Permissive Policies
+-- (Ensures INSERT/UPDATE/DELETE are allowed without RLS block errors)
+-- =======================================================
+ALTER TABLE students DISABLE ROW LEVEL SECURITY;
+ALTER TABLE rooms DISABLE ROW LEVEL SECURITY;
+ALTER TABLE allocations DISABLE ROW LEVEL SECURITY;
+ALTER TABLE fees DISABLE ROW LEVEL SECURITY;
+ALTER TABLE complaints DISABLE ROW LEVEL SECURITY;
+ALTER TABLE mess_menu DISABLE ROW LEVEL SECURITY;
+
+-- Fallback policies in case RLS is forcefully enabled in Supabase UI
+ALTER TABLE students ENABLE ROW LEVEL SECURITY;
+ALTER TABLE rooms ENABLE ROW LEVEL SECURITY;
+ALTER TABLE allocations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE fees ENABLE ROW LEVEL SECURITY;
+ALTER TABLE complaints ENABLE ROW LEVEL SECURITY;
+ALTER TABLE mess_menu ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public full access to students" ON students;
+CREATE POLICY "Public full access to students" ON students FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public full access to rooms" ON rooms;
+CREATE POLICY "Public full access to rooms" ON rooms FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public full access to allocations" ON allocations;
+CREATE POLICY "Public full access to allocations" ON allocations FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public full access to fees" ON fees;
+CREATE POLICY "Public full access to fees" ON fees FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public full access to complaints" ON complaints;
+CREATE POLICY "Public full access to complaints" ON complaints FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public full access to mess_menu" ON mess_menu;
+CREATE POLICY "Public full access to mess_menu" ON mess_menu FOR ALL USING (true) WITH CHECK (true);
+
+-- =======================================================
+-- 4. Seed Sample Data for Testing
 -- =======================================================
 
 -- Rooms
