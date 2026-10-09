@@ -17,25 +17,25 @@ export default function Toast() {
   if (!toast) return null;
 
   const bgStyles = {
-    success: 'bg-emerald-950/90 border-emerald-500/50 text-emerald-200',
-    error: 'bg-rose-950/90 border-rose-500/50 text-rose-200',
-    info: 'bg-indigo-950/90 border-indigo-500/50 text-indigo-200'
+    success: 'bg-white border-emerald-300 text-slate-800 shadow-2xl',
+    error: 'bg-white border-rose-300 text-slate-800 shadow-2xl',
+    info: 'bg-white border-indigo-300 text-slate-800 shadow-2xl'
   };
 
   const icons = {
-    success: <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />,
-    error: <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />,
-    info: <Info className="w-5 h-5 text-indigo-400 shrink-0" />
+    success: <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />,
+    error: <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />,
+    info: <Info className="w-5 h-5 text-indigo-600 shrink-0" />
   };
 
   return (
     <div className="fixed bottom-5 right-5 z-50 animate-fade-in max-w-sm w-full">
       <div className={`flex items-center gap-3 p-4 rounded-xl border shadow-xl backdrop-blur-md ${bgStyles[toast.type] || bgStyles.info}`}>
         {icons[toast.type] || icons.info}
-        <p className="text-sm font-medium leading-snug flex-1">{toast.message}</p>
+        <p className="text-sm font-semibold leading-snug flex-1 text-slate-900">{toast.message}</p>
         <button
           onClick={removeToast}
-          className="p-1 text-slate-400 hover:text-white rounded-lg transition-colors"
+          className="p-1 text-slate-400 hover:text-slate-700 rounded-lg transition-colors"
           aria-label="Close Toast"
         >
           <X className="w-4 h-4" />

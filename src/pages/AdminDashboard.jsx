@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../lib/supabase';
 import {
@@ -221,83 +220,121 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col">
+      <div className="min-h-screen bg-slate-50 flex flex-col">
         <Navbar />
-        <div className="flex-1 flex items-center justify-center text-slate-400 gap-3">
-          <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
-          <span>Fetching Administrative Control Center...</span>
+        <div className="flex-1 flex items-center justify-center text-slate-600 gap-3">
+          <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+          <span className="font-medium">Fetching Administrative Control Center...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
-      <Navbar />
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+      <Navbar currentTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="flex flex-1">
-        <Sidebar currentTab={activeTab} onTabChange={setActiveTab} />
-
-        <main className="flex-1 p-6 space-y-6 overflow-y-auto max-w-7xl mx-auto">
-          {/* Admin Header Banner */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">
-                System Administration Control Panel 👑
-              </h1>
-              <p className="text-xs text-slate-400 mt-1">
-                Full governance over Students, Room Allocations, Fee Billing, and Mess Operations
-              </p>
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        {/* Admin Header Banner */}
+        <div className="glass-panel p-6 rounded-2xl border border-slate-200 bg-white flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+          <div>
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 mb-2">
+              <span>👑 Super Admin Governance</span>
+              <span>•</span>
+              <span>Full Access</span>
             </div>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+              System Administration Control Panel
+            </h1>
+            <p className="text-xs text-slate-500 mt-1">
+              Full governance over Students, Room Allocations, Fee Billing, and Mess Operations
+            </p>
+          </div>
 
-            {/* Quick Metrics */}
-            <div className="flex items-center gap-3">
-              <div className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-center">
-                <span className="text-[10px] uppercase font-bold text-slate-500 block">Total Students</span>
-                <span className="text-lg font-extrabold text-white">{students.length}</span>
-              </div>
-              <div className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-center">
-                <span className="text-[10px] uppercase font-bold text-slate-500 block">Available Rooms</span>
-                <span className="text-lg font-extrabold text-emerald-400">{availableRooms.length} / {rooms.length}</span>
-              </div>
-              <div className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-center">
-                <span className="text-[10px] uppercase font-bold text-slate-500 block">Total Revenue Collected</span>
-                <span className="text-lg font-extrabold text-indigo-400">
-                  ₹{fees.filter(f => f.status === 'paid').reduce((acc, f) => acc + Number(f.amount), 0).toLocaleString()}
-                </span>
-              </div>
+          {/* Quick Metrics */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-center shadow-2xs">
+              <span className="text-[10px] uppercase font-bold text-slate-500 block">Total Students</span>
+              <span className="text-lg font-black text-slate-900">{students.length}</span>
+            </div>
+            <div className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-center shadow-2xs">
+              <span className="text-[10px] uppercase font-bold text-slate-500 block">Available Rooms</span>
+              <span className="text-lg font-black text-emerald-600">{availableRooms.length} / {rooms.length}</span>
+            </div>
+            <div className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-center shadow-2xs">
+              <span className="text-[10px] uppercase font-bold text-slate-500 block">Total Revenue Collected</span>
+              <span className="text-lg font-black text-indigo-600">
+                ₹{fees.filter(f => f.status === 'paid').reduce((acc, f) => acc + Number(f.amount), 0).toLocaleString()}
+              </span>
             </div>
           </div>
+        </div>
+
+        {/* Admin Quick Action Shortcuts Bar */}
+        <div className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200 shadow-xs gap-3 overflow-x-auto">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider px-2 flex items-center gap-1.5 shrink-0">
+            ⚡ Administrative Shortcuts:
+          </span>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setIsAddStudentOpen(true)}
+              className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 rounded-lg text-xs font-bold transition-all"
+            >
+              + Register Student
+            </button>
+            <button
+              onClick={() => setIsAllocateOpen(true)}
+              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-lg text-xs font-bold transition-all"
+            >
+              + Allocate Room
+            </button>
+            <button
+              onClick={() => setIsAddFeeOpen(true)}
+              className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-bold transition-all"
+            >
+              + Generate Fee Invoice
+            </button>
+            <button
+              onClick={() => {
+                setMenuForm({ menu_id: null, day_of_week: 'Monday', meal_type: 'breakfast', items: '' });
+                setIsEditMenuOpen(true);
+              }}
+              className="px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 rounded-lg text-xs font-bold transition-all"
+            >
+              + Add Mess Item
+            </button>
+          </div>
+        </div>
 
           {/* TAB 1: STUDENTS DIRECTORY */}
           {(activeTab === 'overview' || activeTab === 'students') && (
             <div className="glass-card p-6 rounded-2xl space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3 gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-3 gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-indigo-500/10 text-indigo-400 rounded-xl">
+                  <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                     <Users className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-base font-bold text-white">Student Directory</h2>
-                    <p className="text-xs text-slate-400">Register, edit, and delete student accounts</p>
+                    <h2 className="text-base font-bold text-slate-900">Student Directory</h2>
+                    <p className="text-xs text-slate-500">Register, edit, and delete student accounts</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                     <input
                       type="text"
                       placeholder="Search students..."
                       value={searchStudent}
                       onChange={(e) => setSearchStudent(e.target.value)}
-                      className="pl-9 pr-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                      className="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white"
                     />
                   </div>
 
                   <button
                     onClick={() => setIsAddStudentOpen(true)}
-                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5"
+                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5"
                   >
                     <Plus className="w-4 h-4" /> Add Student
                   </button>
@@ -305,8 +342,8 @@ export default function AdminDashboard() {
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-slate-300">
-                  <thead className="bg-slate-950/80 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+                <table className="w-full text-left text-xs text-slate-700">
+                  <thead className="bg-slate-100 text-slate-600 uppercase text-[10px] font-bold border-b border-slate-200">
                     <tr>
                       <th className="py-3 px-4">ID</th>
                       <th className="py-3 px-4">Name</th>
@@ -317,23 +354,23 @@ export default function AdminDashboard() {
                       <th className="py-3 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60">
+                  <tbody className="divide-y divide-slate-200/80">
                     {filteredStudents.map((s) => (
-                      <tr key={s.student_id} className="hover:bg-slate-800/40 transition-colors">
-                        <td className="py-3 px-4 font-mono text-slate-400">#{s.student_id}</td>
-                        <td className="py-3 px-4 font-bold text-white">{s.name}</td>
-                        <td className="py-3 px-4 text-slate-300">{s.email}</td>
-                        <td className="py-3 px-4 text-slate-400">{s.phone || 'N/A'}</td>
-                        <td className="py-3 px-4 text-slate-300">{s.course} (Yr {s.year})</td>
+                      <tr key={s.student_id} className="hover:bg-slate-50 transition-colors">
+                        <td className="py-3 px-4 font-mono text-slate-500">#{s.student_id}</td>
+                        <td className="py-3 px-4 font-bold text-slate-900">{s.name}</td>
+                        <td className="py-3 px-4 text-slate-600">{s.email}</td>
+                        <td className="py-3 px-4 text-slate-600">{s.phone || 'N/A'}</td>
+                        <td className="py-3 px-4 text-slate-700">{s.course} (Yr {s.year})</td>
                         <td className="py-3 px-4 capitalize">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${s.meal_pref === 'veg' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${s.meal_pref === 'veg' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`}>
                             {s.meal_pref}
                           </span>
                         </td>
                         <td className="py-3 px-4 text-right">
                           <button
                             onClick={() => handleDeleteStudent(s.student_id)}
-                            className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
+                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                             title="Delete Student"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -350,28 +387,28 @@ export default function AdminDashboard() {
           {/* TAB 2: ROOM ALLOCATIONS */}
           {(activeTab === 'overview' || activeTab === 'allocations') && (
             <div className="glass-card p-6 rounded-2xl space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3 gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-3 gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-indigo-500/10 text-indigo-400 rounded-xl">
+                  <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                     <BedDouble className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-base font-bold text-white">Student Room Allocations</h2>
-                    <p className="text-xs text-slate-400">Assign available rooms to students or process room vacates</p>
+                    <h2 className="text-base font-bold text-slate-900">Student Room Allocations</h2>
+                    <p className="text-xs text-slate-500">Assign available rooms to students or process room vacates</p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => setIsAllocateOpen(true)}
-                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5"
                 >
                   <Plus className="w-4 h-4" /> Allocate Room
                 </button>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-slate-300">
-                  <thead className="bg-slate-950/80 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+                <table className="w-full text-left text-xs text-slate-700">
+                  <thead className="bg-slate-100 text-slate-600 uppercase text-[10px] font-bold border-b border-slate-200">
                     <tr>
                       <th className="py-3 px-4">Student</th>
                       <th className="py-3 px-4">Room Number</th>
@@ -381,31 +418,31 @@ export default function AdminDashboard() {
                       <th className="py-3 px-4 text-right">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60">
+                  <tbody className="divide-y divide-slate-200/80">
                     {allocations.map((alloc) => (
-                      <tr key={alloc.allocation_id} className="hover:bg-slate-800/40 transition-colors">
-                        <td className="py-3 px-4 font-bold text-white">
+                      <tr key={alloc.allocation_id} className="hover:bg-slate-50 transition-colors">
+                        <td className="py-3 px-4 font-bold text-slate-900">
                           {alloc.students?.name || `Student #${alloc.student_id}`}
                         </td>
-                        <td className="py-3 px-4 font-extrabold text-indigo-400">
+                        <td className="py-3 px-4 font-extrabold text-indigo-600">
                           Room {alloc.rooms?.room_number || alloc.room_id}
                         </td>
-                        <td className="py-3 px-4 text-slate-300">
+                        <td className="py-3 px-4 text-slate-700">
                           Floor #{alloc.rooms?.floor || 1} • {alloc.rooms?.type || 'Standard'}
                         </td>
-                        <td className="py-3 px-4 text-slate-400">{alloc.alloc_date}</td>
-                        <td className="py-3 px-4 text-slate-400">
+                        <td className="py-3 px-4 text-slate-600">{alloc.alloc_date}</td>
+                        <td className="py-3 px-4 text-slate-600">
                           {alloc.vacate_date ? (
-                            <span className="text-rose-400">{alloc.vacate_date}</span>
+                            <span className="text-rose-600 font-semibold">{alloc.vacate_date}</span>
                           ) : (
-                            <span className="text-emerald-400 font-semibold">Active</span>
+                            <span className="text-emerald-700 font-semibold">Active</span>
                           )}
                         </td>
                         <td className="py-3 px-4 text-right">
                           {!alloc.vacate_date && (
                             <button
                               onClick={() => handleVacateRoom(alloc.allocation_id)}
-                              className="px-2.5 py-1 bg-slate-950 hover:bg-slate-800 border border-slate-800 text-rose-400 font-semibold text-xs rounded-lg transition-colors"
+                              className="px-2.5 py-1 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-rose-600 font-semibold text-xs rounded-lg transition-colors"
                             >
                               Vacate Room
                             </button>
@@ -422,28 +459,28 @@ export default function AdminDashboard() {
           {/* TAB 3: FEES BILLING & MANAGEMENT */}
           {(activeTab === 'overview' || activeTab === 'fees') && (
             <div className="glass-card p-6 rounded-2xl space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3 gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-3 gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                  <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
                     <Receipt className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-base font-bold text-white">Fee Records & Collections</h2>
-                    <p className="text-xs text-slate-400">Generate fee invoices per student and mark payments as paid</p>
+                    <h2 className="text-base font-bold text-slate-900">Fee Records & Collections</h2>
+                    <p className="text-xs text-slate-500">Generate fee invoices per student and mark payments as paid</p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => setIsAddFeeOpen(true)}
-                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5"
                 >
                   <Plus className="w-4 h-4" /> Generate Fee Record
                 </button>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-slate-300">
-                  <thead className="bg-slate-950/80 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+                <table className="w-full text-left text-xs text-slate-700">
+                  <thead className="bg-slate-100 text-slate-600 uppercase text-[10px] font-bold border-b border-slate-200">
                     <tr>
                       <th className="py-3 px-4">Student</th>
                       <th className="py-3 px-4">Semester</th>
@@ -454,19 +491,19 @@ export default function AdminDashboard() {
                       <th className="py-3 px-4 text-right">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60">
+                  <tbody className="divide-y divide-slate-200/80">
                     {fees.map((fee) => (
-                      <tr key={fee.fee_id} className="hover:bg-slate-800/40 transition-colors">
-                        <td className="py-3 px-4 font-bold text-white">{fee.students?.name || `Student #${fee.student_id}`}</td>
-                        <td className="py-3 px-4 text-slate-300 font-semibold">{fee.semester}</td>
-                        <td className="py-3 px-4 font-extrabold text-indigo-300">₹{Number(fee.amount).toLocaleString()}</td>
-                        <td className="py-3 px-4 text-slate-400">{fee.due_date}</td>
-                        <td className="py-3 px-4 text-slate-400">{fee.paid_date || '—'}</td>
+                      <tr key={fee.fee_id} className="hover:bg-slate-50 transition-colors">
+                        <td className="py-3 px-4 font-bold text-slate-900">{fee.students?.name || `Student #${fee.student_id}`}</td>
+                        <td className="py-3 px-4 text-slate-800 font-semibold">{fee.semester}</td>
+                        <td className="py-3 px-4 font-extrabold text-indigo-700">₹{Number(fee.amount).toLocaleString()}</td>
+                        <td className="py-3 px-4 text-slate-600">{fee.due_date}</td>
+                        <td className="py-3 px-4 text-slate-600">{fee.paid_date || '—'}</td>
                         <td className="py-3 px-4">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                            fee.status === 'paid' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                            fee.status === 'overdue' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
-                            'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                            fee.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                            fee.status === 'overdue' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
+                            'bg-amber-50 text-amber-700 border border-amber-200'
                           }`}>
                             {fee.status}
                           </span>
@@ -475,7 +512,7 @@ export default function AdminDashboard() {
                           {fee.status !== 'paid' && (
                             <button
                               onClick={() => handleMarkFeePaid(fee.fee_id)}
-                              className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] rounded-lg shadow"
+                              className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] rounded-lg shadow"
                             >
                               Mark Paid ✓
                             </button>
@@ -492,14 +529,14 @@ export default function AdminDashboard() {
           {/* TAB 4: MESS MENU MANAGEMENT */}
           {(activeTab === 'overview' || activeTab === 'mess') && (
             <div className="glass-card p-6 rounded-2xl space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3 gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-3 gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-500/10 text-purple-400 rounded-xl">
+                  <div className="p-2 bg-purple-50 text-purple-600 rounded-xl">
                     <UtensilsCrossed className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-base font-bold text-white">Mess Menu Manager</h2>
-                    <p className="text-xs text-slate-400">Configure weekly breakfast, lunch, and dinner items</p>
+                    <h2 className="text-base font-bold text-slate-900">Mess Menu Manager</h2>
+                    <p className="text-xs text-slate-500">Configure weekly breakfast, lunch, and dinner items</p>
                   </div>
                 </div>
 
@@ -508,7 +545,7 @@ export default function AdminDashboard() {
                     setMenuForm({ menu_id: null, day_of_week: 'Monday', meal_type: 'breakfast', items: '' });
                     setIsEditMenuOpen(true);
                   }}
-                  className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5"
                 >
                   <Plus className="w-4 h-4" /> Add Menu Item
                 </button>
@@ -516,20 +553,20 @@ export default function AdminDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {messMenu.slice(0, 6).map((m) => (
-                  <div key={m.menu_id} className="p-4 bg-slate-900/90 rounded-xl border border-slate-800 space-y-2">
+                  <div key={m.menu_id} className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-indigo-400">{m.day_of_week}</span>
-                      <span className="text-[10px] font-bold uppercase text-purple-300 px-2 py-0.5 rounded bg-purple-500/10">
+                      <span className="text-xs font-bold text-indigo-700">{m.day_of_week}</span>
+                      <span className="text-[10px] font-bold uppercase text-purple-700 px-2 py-0.5 rounded bg-purple-50 border border-purple-200">
                         {m.meal_type}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-200 font-medium">{m.items}</p>
+                    <p className="text-xs text-slate-800 font-medium">{m.items}</p>
                     <button
                       onClick={() => {
                         setMenuForm({ menu_id: m.menu_id, day_of_week: m.day_of_week, meal_type: m.meal_type, items: m.items });
                         setIsEditMenuOpen(true);
                       }}
-                      className="text-[11px] text-slate-400 hover:text-white font-semibold flex items-center gap-1 pt-1"
+                      className="text-[11px] text-slate-500 hover:text-slate-900 font-semibold flex items-center gap-1 pt-1"
                     >
                       <Edit className="w-3 h-3" /> Edit Item
                     </button>
@@ -539,68 +576,67 @@ export default function AdminDashboard() {
             </div>
           )}
         </main>
-      </div>
 
       {/* MODAL 1: ADD STUDENT */}
       {isAddStudentOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white">Add New Student</h3>
-              <button onClick={() => setIsAddStudentOpen(false)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl text-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h3 className="text-base font-bold text-slate-900">Add New Student</h3>
+              <button onClick={() => setIsAddStudentOpen(false)} className="text-slate-400 hover:text-slate-700"><X className="w-5 h-5" /></button>
             </div>
             <form onSubmit={handleAddStudent} className="space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
                 <input
                   type="text"
                   required
                   placeholder="Rahul Sharma"
                   value={studentForm.name}
                   onChange={(e) => setStudentForm({ ...studentForm, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
                 <input
                   type="email"
                   required
                   placeholder="student@example.com"
                   value={studentForm.email}
                   onChange={(e) => setStudentForm({ ...studentForm, email: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white"
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Phone</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Phone</label>
                   <input
                     type="text"
                     placeholder="9876543210"
                     value={studentForm.phone}
                     onChange={(e) => setStudentForm({ ...studentForm, phone: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Course</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Course</label>
                   <input
                     type="text"
                     placeholder="B.Tech CSE"
                     value={studentForm.course}
                     onChange={(e) => setStudentForm({ ...studentForm, course: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Year</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Year</label>
                   <select
                     value={studentForm.year}
                     onChange={(e) => setStudentForm({ ...studentForm, year: Number(e.target.value) })}
-                    className="w-full px-2 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none"
+                    className="w-full px-2 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none"
                   >
                     <option value={1}>Year 1</option>
                     <option value={2}>Year 2</option>
@@ -609,11 +645,11 @@ export default function AdminDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Gender</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Gender</label>
                   <select
                     value={studentForm.gender}
                     onChange={(e) => setStudentForm({ ...studentForm, gender: e.target.value })}
-                    className="w-full px-2 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none capitalize"
+                    className="w-full px-2 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none capitalize"
                   >
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -621,11 +657,11 @@ export default function AdminDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Meal Pref</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Meal Pref</label>
                   <select
                     value={studentForm.meal_pref}
                     onChange={(e) => setStudentForm({ ...studentForm, meal_pref: e.target.value })}
-                    className="w-full px-2 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none capitalize"
+                    className="w-full px-2 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none capitalize"
                   >
                     <option value="veg">Veg</option>
                     <option value="non-veg">Non-Veg</option>
@@ -634,7 +670,7 @@ export default function AdminDashboard() {
               </div>
               <button
                 type="submit"
-                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 font-bold text-xs text-white rounded-xl shadow"
+                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 font-bold text-xs text-white rounded-xl shadow"
               >
                 Create Student Record
               </button>
@@ -645,19 +681,19 @@ export default function AdminDashboard() {
 
       {/* MODAL 2: ALLOCATE ROOM */}
       {isAllocateOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white">Allocate Room to Student</h3>
-              <button onClick={() => setIsAllocateOpen(false)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl text-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h3 className="text-base font-bold text-slate-900">Allocate Room to Student</h3>
+              <button onClick={() => setIsAllocateOpen(false)} className="text-slate-400 hover:text-slate-700"><X className="w-5 h-5" /></button>
             </div>
             <form onSubmit={handleAllocateRoom} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Select Student</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Select Student</label>
                 <select
                   value={allocForm.student_id}
                   onChange={(e) => setAllocForm({ ...allocForm, student_id: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none"
                 >
                   {students.map((s) => (
                     <option key={s.student_id} value={s.student_id}>
@@ -668,11 +704,11 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Select Available Room</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Select Available Room</label>
                 <select
                   value={allocForm.room_id}
                   onChange={(e) => setAllocForm({ ...allocForm, room_id: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none"
                 >
                   {availableRooms.length === 0 ? (
                     <option value="">No available rooms</option>
@@ -689,7 +725,7 @@ export default function AdminDashboard() {
               <button
                 type="submit"
                 disabled={availableRooms.length === 0}
-                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 font-bold text-xs text-white rounded-xl shadow disabled:opacity-50"
+                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 font-bold text-xs text-white rounded-xl shadow disabled:opacity-50"
               >
                 Confirm Allocation
               </button>
@@ -700,19 +736,19 @@ export default function AdminDashboard() {
 
       {/* MODAL 3: GENERATE FEE RECORD */}
       {isAddFeeOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white">Generate Fee Record</h3>
-              <button onClick={() => setIsAddFeeOpen(false)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl text-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h3 className="text-base font-bold text-slate-900">Generate Fee Record</h3>
+              <button onClick={() => setIsAddFeeOpen(false)} className="text-slate-400 hover:text-slate-700"><X className="w-5 h-5" /></button>
             </div>
             <form onSubmit={handleCreateFee} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Student</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Student</label>
                 <select
                   value={feeForm.student_id}
                   onChange={(e) => setFeeForm({ ...feeForm, student_id: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none"
                 >
                   {students.map((s) => (
                     <option key={s.student_id} value={s.student_id}>
@@ -723,43 +759,43 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Semester Name</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Semester Name</label>
                 <input
                   type="text"
                   required
                   placeholder="Sem 3 (2026)"
                   value={feeForm.semester}
                   onChange={(e) => setFeeForm({ ...feeForm, semester: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Amount (₹)</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Amount (₹)</label>
                   <input
                     type="number"
                     required
                     value={feeForm.amount}
                     onChange={(e) => setFeeForm({ ...feeForm, amount: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Due Date</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Due Date</label>
                   <input
                     type="date"
                     required
                     value={feeForm.due_date}
                     onChange={(e) => setFeeForm({ ...feeForm, due_date: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none"
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 font-bold text-xs text-white rounded-xl shadow"
+                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 font-bold text-xs text-white rounded-xl shadow"
               >
                 Generate Fee Record
               </button>
@@ -770,20 +806,20 @@ export default function AdminDashboard() {
 
       {/* MODAL 4: ADD/EDIT MESS MENU */}
       {isEditMenuOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white">{menuForm.menu_id ? 'Edit Mess Menu Item' : 'Add Mess Menu Item'}</h3>
-              <button onClick={() => setIsEditMenuOpen(false)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl text-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h3 className="text-base font-bold text-slate-900">{menuForm.menu_id ? 'Edit Mess Menu Item' : 'Add Mess Menu Item'}</h3>
+              <button onClick={() => setIsEditMenuOpen(false)} className="text-slate-400 hover:text-slate-700"><X className="w-5 h-5" /></button>
             </div>
             <form onSubmit={handleSaveMessMenu} className="space-y-4">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Day of Week</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Day of Week</label>
                   <select
                     value={menuForm.day_of_week}
                     onChange={(e) => setMenuForm({ ...menuForm, day_of_week: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none"
                   >
                     {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(d => (
                       <option key={d} value={d}>{d}</option>
@@ -791,11 +827,11 @@ export default function AdminDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Meal Type</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Meal Type</label>
                   <select
                     value={menuForm.meal_type}
                     onChange={(e) => setMenuForm({ ...menuForm, meal_type: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none capitalize"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none capitalize"
                   >
                     <option value="breakfast">Breakfast</option>
                     <option value="lunch">Lunch</option>
@@ -805,20 +841,20 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Menu Items</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Menu Items</label>
                 <textarea
                   rows="3"
                   required
                   placeholder="e.g. Paneer Butter Masala, Dal Makhani, Rice, Roti, Gulab Jamun"
                   value={menuForm.items}
                   onChange={(e) => setMenuForm({ ...menuForm, items: e.target.value })}
-                  className="w-full p-3 bg-slate-950 border border-slate-700/70 rounded-xl text-xs text-slate-200 focus:outline-none"
+                  className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 font-bold text-xs text-white rounded-xl shadow"
+                className="w-full py-2.5 bg-purple-600 hover:bg-purple-700 font-bold text-xs text-white rounded-xl shadow"
               >
                 Save Menu Item
               </button>
