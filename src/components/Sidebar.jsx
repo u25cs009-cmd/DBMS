@@ -50,17 +50,17 @@ export default function Sidebar({ currentTab, onTabChange }) {
   const links = getLinks();
 
   return (
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 min-h-[calc(100vh-4rem)]">
+    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-4rem)] shadow-sm">
       {/* User Info Header */}
-      <div className="p-4 border-b border-slate-800/80 bg-slate-950/40">
+      <div className="p-4 border-b border-slate-200 bg-slate-50/80">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white font-extrabold text-sm shadow-md">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-extrabold text-sm shadow-md">
             {user?.name ? user.name.substring(0, 2).toUpperCase() : 'US'}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-bold text-white truncate">{user?.name || 'User Account'}</p>
-            <p className="text-[11px] text-slate-400 truncate">{user?.email}</p>
-            <span className="inline-block mt-1 text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+            <p className="text-xs font-bold text-slate-900 truncate">{user?.name || 'User Account'}</p>
+            <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
+            <span className="inline-block mt-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
               {role} Role
             </span>
           </div>
@@ -69,7 +69,7 @@ export default function Sidebar({ currentTab, onTabChange }) {
 
       {/* Navigation List */}
       <div className="p-3 space-y-1 flex-1">
-        <p className="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+        <p className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
           {role} Navigation
         </p>
 
@@ -82,11 +82,11 @@ export default function Sidebar({ currentTab, onTabChange }) {
               onClick={() => onTabChange(link.id)}
               className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                 isActive
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-500'}`} />
               <span>{link.label}</span>
             </button>
           );
@@ -94,9 +94,9 @@ export default function Sidebar({ currentTab, onTabChange }) {
       </div>
 
       {/* Footer System Status */}
-      <div className="p-4 border-t border-slate-800 text-[11px] text-slate-500 flex items-center justify-between">
+      <div className="p-4 border-t border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
         <span>System Version v1.0.0</span>
-        <span className="text-emerald-400 font-semibold">PostgreSQL</span>
+        <span className="text-emerald-600 font-bold">PostgreSQL</span>
       </div>
     </aside>
   );

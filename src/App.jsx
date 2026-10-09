@@ -21,7 +21,7 @@ function HomeRedirect() {
 export default function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-slate-950 text-slate-100 antialiased font-['Plus_Jakarta_Sans',sans-serif]">
+      <div className="min-h-screen bg-slate-50 text-slate-900 antialiased font-['Plus_Jakarta_Sans',sans-serif]">
         <Toast />
         <Routes>
           <Route path="/" element={<HomeRedirect />} />
