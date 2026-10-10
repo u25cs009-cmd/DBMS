@@ -5,58 +5,58 @@
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background-color: #fffaf5;
-    color: #292524;
+    background-color: #f8fafc;
+    color: #0f172a;
   }
 }
 
-/* Custom warm scrollbar */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #fbf7f4;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #e7dfd8;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #ea580c;
+  background: #4f46e5;
 }
 
-/* Glassmorphism helpers for Indian Warm Palette */
+/* Glassmorphism helpers */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(254, 215, 170, 0.6);
-  box-shadow: 0 4px 20px -2px rgba(154, 52, 18, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 20px -2px rgba(30, 58, 138, 0.05);
 }
 
 .glass-card {
   background: #ffffff;
   backdrop-filter: blur(8px);
-  border: 1px solid #fed7aa;
-  box-shadow: 0 1px 3px 0 rgba(194, 65, 12, 0.04), 0 1px 2px -1px rgba(194, 65, 12, 0.04);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(30, 58, 138, 0.04), 0 1px 2px -1px rgba(30, 58, 138, 0.04);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(234, 88, 12, 0.4);
-  box-shadow: 0 8px 24px -4px rgba(194, 65, 12, 0.1);
+  border-color: rgba(79, 70, 229, 0.3);
+  box-shadow: 0 8px 24px -4px rgba(30, 58, 138, 0.1);
   transform: translateY(-2px);
 }
 
-/* Subtle Indian Jaali / Dotted Geometric Pattern */
+/* Geometric Pattern */
 .bg-jaali {
-  background-image: radial-gradient(#ea580c 1.1px, transparent 1.1px);
+  background-image: radial-gradient(#6366f1 1.1px, transparent 1.1px);
   background-size: 20px 20px;
 }
 
 .bg-rangoli-dots {
-  background-image: radial-gradient(rgba(194, 65, 12, 0.15) 1.2px, transparent 1.2px), radial-gradient(rgba(159, 18, 57, 0.1) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(rgba(79, 70, 229, 0.12) 1.2px, transparent 1.2px), radial-gradient(rgba(14, 165, 233, 0.1) 1.2px, transparent 1.2px);
   background-size: 24px 24px;
   background-position: 0 0, 12px 12px;
 }
@@ -73,7 +73,7 @@
 
 /* Skeleton Loading Shimmer */
 .skeleton-shimmer {
-  background: linear-gradient(90deg, #f5efe6 25%, #ffedd5 50%, #f5efe6 75%);
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
