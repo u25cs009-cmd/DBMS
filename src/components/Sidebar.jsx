@@ -49,28 +49,34 @@ export default function Sidebar({ currentTab, onTabChange }) {
 
   const links = getLinks();
 
+  const roleDevanagari = {
+    student: 'विद्यार्थी',
+    warden: 'वार्डन',
+    admin: 'प्रशासक'
+  };
+
   return (
-    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-4rem)] shadow-sm">
+    <aside className="w-64 bg-white border-r border-orange-100 flex flex-col shrink-0 min-h-[calc(100vh-4rem)] shadow-warm-sm">
       {/* User Info Header */}
-      <div className="p-4 border-b border-slate-200 bg-slate-50/80">
+      <div className="p-4 border-b border-orange-100 bg-orange-50/40">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-extrabold text-sm shadow-md">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-500 to-red-700 flex items-center justify-center text-white font-black text-sm shadow-warm-sm">
             {user?.name ? user.name.substring(0, 2).toUpperCase() : 'US'}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-bold text-slate-900 truncate">{user?.name || 'User Account'}</p>
-            <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
-            <span className="inline-block mt-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
-              {role} Role
+            <p className="text-xs font-bold text-stone-900 truncate">{user?.name || 'User Account'}</p>
+            <p className="text-[11px] text-stone-500 truncate">{user?.email}</p>
+            <span className="inline-block mt-1 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-orange-100 text-orange-800 border border-orange-200">
+              {role} ({roleDevanagari[role] || role})
             </span>
           </div>
         </div>
       </div>
 
       {/* Navigation List */}
-      <div className="p-3 space-y-1 flex-1">
-        <p className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-          {role} Navigation
+      <div className="p-3 space-y-1.5 flex-1">
+        <p className="px-3 text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2 font-['Noto_Sans_Devanagari',sans-serif]">
+          नेविगेशन मेनू
         </p>
 
         {links.map((link) => {
@@ -80,13 +86,13 @@ export default function Sidebar({ currentTab, onTabChange }) {
             <button
               key={link.id}
               onClick={() => onTabChange(link.id)}
-              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
                 isActive
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  ? 'bg-gradient-to-r from-orange-600 to-red-700 text-white shadow-warm-sm'
+                  : 'text-stone-600 hover:text-stone-900 hover:bg-orange-50/70'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-stone-400'}`} />
               <span>{link.label}</span>
             </button>
           );
@@ -94,9 +100,11 @@ export default function Sidebar({ currentTab, onTabChange }) {
       </div>
 
       {/* Footer System Status */}
-      <div className="p-4 border-t border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
-        <span>System Version v1.0.0</span>
-        <span className="text-emerald-600 font-bold">PostgreSQL</span>
+      <div className="p-4 border-t border-orange-100 text-[11px] text-stone-500 flex items-center justify-between bg-stone-50/50">
+        <span className="font-medium">HostelConnect v1.0</span>
+        <span className="text-emerald-700 font-bold flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> PostgreSQL
+        </span>
       </div>
     </aside>
   );

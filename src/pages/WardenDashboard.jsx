@@ -13,7 +13,13 @@ import {
   Wrench,
   Loader2,
   BedDouble,
-  Users
+  Users,
+  Shield,
+  Sparkles,
+  ArrowRight,
+  TrendingUp,
+  SlidersHorizontal,
+  Home
 } from 'lucide-react';
 
 export default function WardenDashboard() {
@@ -75,243 +81,415 @@ export default function WardenDashboard() {
     }
   };
 
-  const filteredComplaints = complaints.filter(c => {
+  const filteredComplaints = complaints.filter((c) => {
     const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
     const matchesCategory = categoryFilter === 'all' || c.category === categoryFilter;
     return matchesStatus && matchesCategory;
   });
 
-  const filteredRooms = rooms.filter(r => {
+  const filteredRooms = rooms.filter((r) => {
     return roomFloorFilter === 'all' || r.floor === Number(roomFloorFilter);
   });
 
-  const pendingCount = complaints.filter(c => c.status === 'pending').length;
-  const inProgressCount = complaints.filter(c => c.status === 'in_progress').length;
-  const occupiedRooms = rooms.filter(r => r.status === 'occupied').length;
-  const maintenanceRooms = rooms.filter(r => r.status === 'maintenance').length;
+  const pendingCount = complaints.filter((c) => c.status === 'pending').length;
+  const inProgressCount = complaints.filter((c) => c.status === 'in_progress').length;
+  const resolvedCount = complaints.filter((c) => c.status === 'resolved').length;
+  const occupiedRooms = rooms.filter((r) => r.status === 'occupied').length;
+  const availableRooms = rooms.filter((r) => r.status === 'available').length;
+  const maintenanceRooms = rooms.filter((r) => r.status === 'maintenance').length;
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'शुभ प्रभात • Good morning';
+    if (hour < 17) return 'शुभ दोपहर • Good afternoon';
+    return 'शुभ संध्या • Good evening';
+  };
+
+  // Block & Floor Occupancy Calculations
+  const floors = [1, 2, 3];
+  const floorStats = floors.map((fl) => {
+    const flRooms = rooms.filter((r) => r.floor === fl);
+    const flOccupied = flRooms.filter((r) => r.status === 'occupied').length;
+    const percent = flRooms.length > 0 ? Math.round((flOccupied / flRooms.length) * 100) : 0;
+    return { floor: fl, total: flRooms.length, occupied: flOccupied, percent };
+  });
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
+      <div className="min-h-screen bg-orange-50/30 flex flex-col">
         <Navbar />
-        <div className="flex-1 flex items-center justify-center text-slate-600 gap-3">
-          <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
-          <span className="font-medium">Fetching Warden Control Panel...</span>
+        <div className="flex-1 flex flex-col items-center justify-center text-stone-600 gap-4">
+          <div className="p-4 rounded-3xl bg-white border border-orange-200/80 shadow-warm flex items-center gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-orange-600" />
+            <span className="font-bold text-sm text-stone-800">वार्डन पोर्टल लोड हो रहा है • Loading Warden Control Panel...</span>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div className="min-h-screen bg-orange-50/30 text-stone-900 flex flex-col">
       <Navbar currentTab={activeTab} onTabChange={setActiveTab} />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
-        {/* Warden Banner */}
-        <div className="glass-panel p-6 rounded-2xl border border-slate-200 bg-white flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 mb-2">
-              <span>🛡️ Warden Control Center</span>
-            </div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-              Hostel Warden Portal
-            </h1>
-            <p className="text-xs text-slate-500 mt-1">
-              Overseeing complaint resolution, student maintenance requests, and hostel room occupancy
-            </p>
-          </div>
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6 pb-24 sm:pb-8">
+        
+        {/* Creative Personal Greeting Banner */}
+        <div className="relative overflow-hidden rounded-3xl border border-orange-200/80 bg-gradient-to-r from-red-800 via-orange-700 to-red-800 text-white p-6 sm:p-8 shadow-warm-lg">
+          {/* Subtle Jaali / Rangoli Background Pattern */}
+          <div className="absolute inset-0 bg-jaali opacity-10 pointer-events-none" />
+          <div className="absolute -right-16 -top-16 w-60 h-60 bg-amber-400/20 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Quick Stat Counter Cards */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-center shadow-2xs">
-              <span className="text-[10px] uppercase font-bold text-amber-600 block">Pending Complaints</span>
-              <span className="text-lg font-black text-slate-900">{pendingCount}</span>
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/15 backdrop-blur-sm border border-white/20 text-orange-100">
+                <Shield className="w-3.5 h-3.5 text-amber-300" />
+                <span>{getGreeting()}</span>
+                <span>•</span>
+                <span className="font-['Noto_Sans_Devanagari',sans-serif]">मुख्य वार्डन कक्ष</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">
+                नमस्ते, <span className="text-amber-300 font-['Noto_Sans_Devanagari',sans-serif]">{user?.name || 'Dr. V.K. Singh'}</span> 🙏
+              </h1>
+              <p className="text-xs sm:text-sm text-orange-100 max-w-xl font-normal leading-relaxed">
+                Hostel Warden Portal. Review student maintenance complaints, monitor block-wise room occupancy, and set maintenance flags.
+              </p>
             </div>
-            <div className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-center shadow-2xs">
-              <span className="text-[10px] uppercase font-bold text-blue-600 block">In Progress</span>
-              <span className="text-lg font-black text-slate-900">{inProgressCount}</span>
-            </div>
-            <div className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-center shadow-2xs">
-              <span className="text-[10px] uppercase font-bold text-emerald-600 block">Occupied Rooms</span>
-              <span className="text-lg font-black text-slate-900">{occupiedRooms} / {rooms.length}</span>
+
+            {/* Quick Metrics Counter Cards */}
+            <div className="flex flex-wrap gap-3">
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-center min-w-[105px]">
+                <span className="text-[10px] uppercase font-bold text-amber-200 block">Pending Issues</span>
+                <span className="text-xl font-black text-amber-300">{pendingCount}</span>
+              </div>
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-center min-w-[105px]">
+                <span className="text-[10px] uppercase font-bold text-orange-200 block">In Progress</span>
+                <span className="text-xl font-black text-white">{inProgressCount}</span>
+              </div>
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-center min-w-[105px]">
+                <span className="text-[10px] uppercase font-bold text-emerald-200 block">Occupied</span>
+                <span className="text-xl font-black text-emerald-300">
+                  {occupiedRooms}/{rooms.length}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-          {/* TAB 1: COMPLAINTS MANAGEMENT */}
-          {(activeTab === 'overview' || activeTab === 'complaints') && (
-            <div className="glass-card p-6 rounded-2xl space-y-5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-4 gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
-                    <MessageSquareWarning className="w-5 h-5" />
+        {/* =========================================================================
+            BLOCK & FLOOR OCCUPANCY BARS (Color-coded by fill)
+           ========================================================================= */}
+        <div className="bg-white rounded-3xl border border-orange-200/80 shadow-warm p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-stone-100 pb-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-2xl bg-orange-50 text-orange-600 border border-orange-200">
+                <Building className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-base font-black text-stone-900 tracking-tight">Block & Floor-Wise Occupancy</h2>
+                <p className="text-xs text-stone-500">Real-time bed fill rates across hostel floors</p>
+              </div>
+            </div>
+            <div className="hidden sm:flex items-center gap-4 text-xs font-bold">
+              <span className="flex items-center gap-1.5 text-emerald-700">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> &lt;70% Low
+              </span>
+              <span className="flex items-center gap-1.5 text-amber-700">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> 70-90% Moderate
+              </span>
+              <span className="flex items-center gap-1.5 text-rose-700">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-600" /> &gt;90% High
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+            {floorStats.map(({ floor, total, occupied, percent }) => {
+              const colorClass =
+                percent > 90
+                  ? 'bg-gradient-to-r from-rose-500 to-rose-600'
+                  : percent >= 70
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-600'
+                  : 'bg-gradient-to-r from-emerald-500 to-emerald-600';
+
+              const badgeColor =
+                percent > 90
+                  ? 'bg-rose-50 text-rose-700 border-rose-200'
+                  : percent >= 70
+                  ? 'bg-amber-50 text-amber-700 border-amber-200'
+                  : 'bg-emerald-50 text-emerald-700 border-emerald-200';
+
+              return (
+                <div key={floor} className="p-4 bg-stone-50/70 rounded-2xl border border-stone-200 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xs font-black text-stone-900 uppercase tracking-wide">Floor #{floor}</h3>
+                      <p className="text-[11px] text-stone-500">{occupied} of {total} rooms occupied</p>
+                    </div>
+                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}`}>
+                      {percent}% Full
+                    </span>
                   </div>
-                  <div>
-                    <h2 className="text-base font-bold text-slate-900">Student Complaints Management</h2>
-                    <p className="text-xs text-slate-500">Review and update progress of student maintenance requests</p>
+
+                  <div className="w-full h-2.5 bg-stone-200 rounded-full overflow-hidden">
+                    <div className={`h-full ${colorClass} transition-all duration-500`} style={{ width: `${percent}%` }} />
                   </div>
                 </div>
+              );
+            })}
+          </div>
+        </div>
 
-                {/* Filter Controls */}
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-xl border border-slate-300">
-                    <Filter className="w-3.5 h-3.5 text-slate-400 ml-1" />
-                    <select
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)}
-                      className="bg-transparent text-xs text-slate-800 font-semibold focus:outline-none py-1 px-1 cursor-pointer"
-                    >
-                      <option value="all">All Statuses</option>
-                      <option value="pending">Pending</option>
-                      <option value="in_progress">In Progress</option>
-                      <option value="resolved">Resolved</option>
-                    </select>
-                  </div>
-
-                  <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-xl border border-slate-300">
-                    <select
-                      value={categoryFilter}
-                      onChange={(e) => setCategoryFilter(e.target.value)}
-                      className="bg-transparent text-xs text-slate-800 font-semibold focus:outline-none py-1 px-1 capitalize cursor-pointer"
-                    >
-                      <option value="all">All Categories</option>
-                      <option value="plumbing">Plumbing</option>
-                      <option value="electricity">Electricity</option>
-                      <option value="cleanliness">Cleanliness</option>
-                      <option value="furniture">Furniture</option>
-                      <option value="internet">Internet</option>
-                    </select>
-                  </div>
+        {/* =========================================================================
+            TAB 1: COMPLAINTS MANAGEMENT WITH FILTER CHIPS & STATUS CONTROLS
+           ========================================================================= */}
+        {(activeTab === 'overview' || activeTab === 'complaints') && (
+          <div className="bg-white rounded-3xl border border-orange-200/80 shadow-warm p-6 space-y-5 animate-fade-in">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-stone-100 pb-4 gap-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200">
+                  <MessageSquareWarning className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-black text-stone-900 tracking-tight">Student Complaints Resolution</h2>
+                  <p className="text-xs text-stone-500">Update maintenance tickets from Pending to In Progress and Resolved</p>
                 </div>
               </div>
 
-              {/* Complaints List */}
-              <div className="space-y-3">
-                {filteredComplaints.length === 0 ? (
-                  <div className="text-center py-8 text-slate-500 text-xs">
-                    No complaints matching the selected filter criteria.
-                  </div>
-                ) : (
-                  filteredComplaints.map((c) => (
-                    <div key={c.complaint_id} className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div className="space-y-1 max-w-2xl">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 px-2 py-0.5 rounded bg-indigo-50 border border-indigo-200">
+              {/* Filter Chips & Controls */}
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Filter Chips for Status */}
+                <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-2xl border border-stone-200">
+                  {[
+                    { id: 'all', label: 'All' },
+                    { id: 'pending', label: 'Pending' },
+                    { id: 'in_progress', label: 'In Progress' },
+                    { id: 'resolved', label: 'Resolved' },
+                  ].map((chip) => (
+                    <button
+                      key={chip.id}
+                      onClick={() => setStatusFilter(chip.id)}
+                      className={`px-3 py-1 rounded-xl text-xs font-bold transition-all ${
+                        statusFilter === chip.id
+                          ? 'bg-gradient-to-r from-orange-600 to-red-700 text-white shadow-warm-sm'
+                          : 'text-stone-600 hover:text-stone-900'
+                      }`}
+                    >
+                      {chip.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Category Dropdown */}
+                <div className="flex items-center gap-1 bg-stone-50 px-2 py-1 rounded-xl border border-stone-300">
+                  <select
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    className="bg-transparent text-xs text-stone-800 font-bold focus:outline-none py-1 px-1 capitalize cursor-pointer"
+                  >
+                    <option value="all">All Categories</option>
+                    <option value="plumbing">🚰 Plumbing</option>
+                    <option value="electricity">⚡ Electricity</option>
+                    <option value="cleanliness">🧹 Cleanliness</option>
+                    <option value="furniture">🪑 Furniture</option>
+                    <option value="internet">📶 Internet</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Complaints List Cards */}
+            <div className="space-y-3.5">
+              {filteredComplaints.length === 0 ? (
+                <div className="text-center py-12 text-stone-400 text-xs">
+                  <span className="text-3xl block mb-2">🎉</span>
+                  <p className="font-bold text-stone-700 text-sm">Koi complaint baki nahi! All clear 🎉</p>
+                  <p className="text-stone-400 mt-0.5">No complaints matching the selected filter criteria.</p>
+                </div>
+              ) : (
+                filteredComplaints.map((c) => {
+                  const priorityConfig = {
+                    electricity: { label: 'Urgent', color: 'bg-rose-100 text-rose-800 border-rose-200' },
+                    plumbing: { label: 'High', color: 'bg-orange-100 text-orange-800 border-orange-200' },
+                    cleanliness: { label: 'Normal', color: 'bg-stone-100 text-stone-700 border-stone-200' },
+                    furniture: { label: 'Medium', color: 'bg-amber-100 text-amber-800 border-amber-200' },
+                    internet: { label: 'Medium', color: 'bg-blue-100 text-blue-800 border-blue-200' },
+                  }[c.category] || { label: 'Normal', color: 'bg-stone-100 text-stone-700 border-stone-200' };
+
+                  return (
+                    <div
+                      key={c.complaint_id}
+                      className="p-5 bg-white rounded-2xl border border-orange-200/70 shadow-xs hover:shadow-warm transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+                    >
+                      <div className="space-y-1.5 max-w-2xl">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-orange-800 px-2.5 py-0.5 rounded-full bg-orange-100 border border-orange-200">
                             {c.category}
                           </span>
-                          <span className="text-xs font-bold text-slate-900">Student: {c.students?.name || `ID #${c.student_id}`}</span>
-                          <span className="text-[10px] text-slate-500">({c.students?.email || 'Student Email'})</span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${priorityConfig.color}`}>
+                            {priorityConfig.label} Priority
+                          </span>
+                          <span className="text-xs font-black text-stone-900">
+                            Student: {c.students?.name || `ID #${c.student_id}`}
+                          </span>
+                          <span className="text-[11px] text-stone-500">({c.students?.email || 'N/A'})</span>
                         </div>
-                        <p className="text-xs text-slate-700 font-medium leading-relaxed">{c.description}</p>
-                        <span className="text-[10px] text-slate-400 block">Raised Date: {new Date(c.raised_date).toLocaleString()}</span>
+                        <p className="text-xs text-stone-800 font-semibold leading-relaxed">{c.description}</p>
+                        <span className="text-[10px] text-stone-400 block">
+                          Raised on: {new Date(c.raised_date).toLocaleString()}
+                        </span>
                       </div>
 
                       {/* Interactive Status Switch Buttons */}
                       <div className="flex items-center gap-2 shrink-0">
                         <button
                           onClick={() => handleUpdateStatus(c.complaint_id, 'pending')}
-                          className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                             c.status === 'pending'
-                              ? 'bg-amber-500 text-white border-amber-500 shadow'
-                              : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                              ? 'bg-amber-500 text-white border-amber-500 shadow-warm-sm'
+                              : 'bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100'
                           }`}
                         >
                           Pending
                         </button>
                         <button
                           onClick={() => handleUpdateStatus(c.complaint_id, 'in_progress')}
-                          className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                             c.status === 'in_progress'
-                              ? 'bg-blue-600 text-white border-blue-600 shadow'
-                              : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                              ? 'bg-orange-600 text-white border-orange-600 shadow-warm-sm'
+                              : 'bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100'
                           }`}
                         >
                           In Progress
                         </button>
                         <button
                           onClick={() => handleUpdateStatus(c.complaint_id, 'resolved')}
-                          className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                             c.status === 'resolved'
-                              ? 'bg-emerald-600 text-white border-emerald-600 shadow'
-                              : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-warm-sm'
+                              : 'bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100'
                           }`}
                         >
                           Resolved ✓
                         </button>
                       </div>
                     </div>
-                  ))
-                )}
+                  );
+                })
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* =========================================================================
+            TAB 2: ROOMS & VISUAL TILE GRID WITH HOVER TOOLTIP
+           ========================================================================= */}
+        {(activeTab === 'overview' || activeTab === 'rooms') && (
+          <div className="bg-white rounded-3xl border border-orange-200/80 shadow-warm p-6 space-y-6 animate-fade-in">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-stone-100 pb-4 gap-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-orange-50 text-orange-600 border border-orange-200">
+                  <BedDouble className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-black text-stone-900 tracking-tight">Hostel Rooms & Occupancy Grid</h2>
+                  <p className="text-xs text-stone-500">Visual occupancy tiles with quick status toggles</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                {/* Floor Filter */}
+                <select
+                  value={roomFloorFilter}
+                  onChange={(e) => setRoomFloorFilter(e.target.value)}
+                  className="bg-stone-50 text-xs text-stone-800 font-bold border border-stone-300 rounded-xl py-1.5 px-3 focus:outline-none cursor-pointer"
+                >
+                  <option value="all">All Floors</option>
+                  <option value="1">Floor 1</option>
+                  <option value="2">Floor 2</option>
+                  <option value="3">Floor 3</option>
+                </select>
               </div>
             </div>
-          )}
 
-          {/* TAB 2: ROOMS & OCCUPANCY */}
-          {(activeTab === 'overview' || activeTab === 'rooms') && (
-            <div className="glass-card p-6 rounded-2xl space-y-5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-4 gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
-                    <Building className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h2 className="text-base font-bold text-slate-900">Hostel Rooms & Occupancy Monitor</h2>
-                    <p className="text-xs text-slate-500">View room status, floor allocations, and set maintenance flags</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <select
-                    value={roomFloorFilter}
-                    onChange={(e) => setRoomFloorFilter(e.target.value)}
-                    className="bg-slate-50 text-xs text-slate-800 font-semibold border border-slate-300 rounded-xl py-1.5 px-3 focus:outline-none cursor-pointer"
-                  >
-                    <option value="all">All Floors</option>
-                    <option value="1">Floor 1</option>
-                    <option value="2">Floor 2</option>
-                    <option value="3">Floor 3</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Room Cards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {/* Visual Colored Room Tiles (Interactive Map) */}
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-3">
+                Visual Room Map (Click tile or toggle to update status):
+              </span>
+              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12 gap-2">
                 {filteredRooms.map((room) => {
-                  const statusColors = {
-                    available: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                    occupied: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-                    maintenance: 'bg-rose-50 text-rose-700 border-rose-200'
-                  };
+                  const tileBg =
+                    room.status === 'occupied'
+                      ? 'bg-orange-100 border-orange-300 text-orange-900'
+                      : room.status === 'maintenance'
+                      ? 'bg-rose-100 border-rose-300 text-rose-900'
+                      : 'bg-emerald-100 border-emerald-300 text-emerald-900';
 
                   return (
-                    <div key={room.room_id} className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg font-extrabold text-slate-900">Room {room.room_number}</span>
-                        <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border ${statusColors[room.status]}`}>
-                          {room.status}
-                        </span>
-                      </div>
-
-                      <div className="text-xs text-slate-600 space-y-1">
-                        <div>Floor: <span className="font-semibold text-slate-800">Floor #{room.floor}</span></div>
-                        <div>Type: <span className="font-semibold text-slate-800 capitalize">{room.type}</span></div>
-                        <div>Capacity: <span className="font-semibold text-slate-800">{room.capacity} Bed(s)</span></div>
-                      </div>
-
-                      <button
-                        onClick={() => handleToggleRoomStatus(room.room_id, room.status)}
-                        className="w-full py-1.5 px-2 bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 font-semibold text-[11px] rounded-lg border border-slate-200 transition-colors flex items-center justify-center gap-1.5"
-                      >
-                        <Wrench className="w-3.5 h-3.5 text-amber-600" />
-                        <span>Toggle Status</span>
-                      </button>
-                    </div>
+                    <button
+                      key={room.room_id}
+                      onClick={() => handleToggleRoomStatus(room.room_id, room.status)}
+                      title={`Room ${room.room_number} • Floor #${room.floor} • ${room.type} (${room.capacity} beds) • Status: ${room.status}`}
+                      className={`p-2 rounded-xl border text-center transition-all hover:scale-105 shadow-2xs group relative ${tileBg}`}
+                    >
+                      <span className="text-[10px] font-black block font-mono">{room.room_number}</span>
+                      <span className="text-[8px] font-bold uppercase block opacity-80">{room.status.substring(0, 3)}</span>
+                    </button>
                   );
                 })}
               </div>
+              <div className="flex items-center gap-4 text-[11px] font-semibold text-stone-500 mt-3 pt-2">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-md bg-emerald-300 border border-emerald-400" /> Available ({availableRooms})
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-md bg-orange-300 border border-orange-400" /> Occupied ({occupiedRooms})
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-md bg-rose-300 border border-rose-400" /> Maintenance ({maintenanceRooms})
+                </span>
+              </div>
             </div>
-          )}
-        </main>
+
+            {/* Room Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-2">
+              {filteredRooms.map((room) => {
+                const statusColors = {
+                  available: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                  occupied: 'bg-orange-50 text-orange-800 border-orange-200',
+                  maintenance: 'bg-rose-50 text-rose-700 border-rose-200'
+                };
+
+                return (
+                  <div key={room.room_id} className="p-4 bg-stone-50/70 rounded-2xl border border-stone-200 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-base font-black text-stone-900">Room {room.room_number}</span>
+                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border ${statusColors[room.status]}`}>
+                        {room.status}
+                      </span>
+                    </div>
+
+                    <div className="text-xs text-stone-600 space-y-1">
+                      <div>Floor: <span className="font-bold text-stone-800">Floor #{room.floor}</span></div>
+                      <div>Type: <span className="font-bold text-stone-800 capitalize">{room.type}</span></div>
+                      <div>Capacity: <span className="font-bold text-stone-800">{room.capacity} Bed(s)</span></div>
+                    </div>
+
+                    <button
+                      onClick={() => handleToggleRoomStatus(room.room_id, room.status)}
+                      className="w-full py-2 px-3 bg-white hover:bg-orange-50 text-stone-700 hover:text-orange-900 font-bold text-[11px] rounded-xl border border-stone-200 transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
+                    >
+                      <Wrench className="w-3.5 h-3.5 text-orange-600" />
+                      <span>Toggle Status</span>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
